@@ -18,8 +18,14 @@ def sidebar_inputs():
     # Strategy selection
     strategy = st.sidebar.selectbox(
         "Select Strategy",
-        ["Bollinger Bands", "SMA Crossover", "RSI Strategy"],
-        index=0
+        [
+            "Bollinger Bands",
+            "SMA Crossover",
+            "RSI Strategy",
+            "Triple MA Crossover",
+            "ML Enhanced Strategy",
+        ],
+        index=0,
     )
 
     # Load data (mock function - replace with your data loader)

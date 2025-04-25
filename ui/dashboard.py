@@ -5,6 +5,7 @@ from utils.technical import prepare_technical_data, convert_to_backtesting_forma
 from backtesting import Backtest
 import vectorbt as vbt
 from utils.helpers import get_portfolio_stats
+import numpy as np
 
 
 def display_dashboard(data):
@@ -35,10 +36,48 @@ def plot_rsi_chart(data):
     fig.add_hline(y=30, line=dict(dash='dash', color='green'))
     st.plotly_chart(fig, use_container_width=True)
 
+
 def plot_predictions(predictions_df):
+    """Plot predictions using Plotly with enhanced styling."""
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=predictions_df['Date'], y=predictions_df['Predicted_Close'], name="Predicted Close", line=dict(color='purple')))
+    # Handle datetime conversion properly
+    if "Date" in predictions_df.columns:
+        dates = np.array(predictions_df["Date"].dt.to_pydatetime())
+    else:
+        dates = np.array(predictions_df.index.to_pydatetime())
+
+    # Get values column
+    if "Predicted_Close" in predictions_df.columns:
+        values = predictions_df["Predicted_Close"]
+    else:
+        values = predictions_df.iloc[:, 0]
+    fig.add_trace(
+        go.Scatter(
+            x=(
+                predictions_df.index
+                if "Date" not in predictions_df.columns
+                else predictions_df["Date"]
+            ),
+            y=(
+                predictions_df["Predicted_Close"]
+                if "Predicted_Close" in predictions_df.columns
+                else predictions_df.iloc[:, 0]
+            ),
+            name="Predicted Close",
+            line=dict(color="purple", width=2),
+            mode="lines+markers",
+            marker=dict(size=8),
+        )
+    )
+    fig.update_layout(
+        title="Future Price Predictions",
+        xaxis_title="Date",
+        yaxis_title="Price",
+        hovermode="x unified",
+        template="plotly_white",
+    )
     st.plotly_chart(fig, use_container_width=True)
+
 
 def show_bollinger_backtest(data, ticker):
     st.subheader("📊 Bollinger Bands Strategy")
