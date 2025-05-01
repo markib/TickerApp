@@ -24,6 +24,7 @@ def sidebar_inputs():
             "RSI Strategy",
             "Triple MA Crossover",
             "ML Enhanced Strategy",
+            "Advanced Ensemble Strategy",
         ],
         index=0,
     )
